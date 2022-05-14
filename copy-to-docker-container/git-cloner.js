@@ -24,8 +24,10 @@ function clone() {
 
   try {
     exec([
-      // copy ss-key to .ssh folder
+      // copy ssh-key to .ssh folder
       'cp -r ssh-key /root/.ssh',
+      // set correct chmod for ssh-key files
+      'chmod -R 400 /root/.ssh',
       // start ssh agent
       'eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519',
       // set git username and email
