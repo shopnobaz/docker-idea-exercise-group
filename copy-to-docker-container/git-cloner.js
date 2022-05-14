@@ -1,4 +1,4 @@
-const { execSync: exec } = require('child_process');
+const { execSync } = require('child_process');
 
 const {
   GIT_REPO_URL: gitRepoUrl,
@@ -20,7 +20,9 @@ function clone() {
   log('hr');
 
   try {
-    exec('git clone ' + gitRepoSsh + ' cloned-repo', { stdio: 'pipe' });
+    exec(`git config --global user.name "${gitUsername}"`);
+    exec(`git config --global user.name "${gitEmail}"`);
+    exec(`git clone ${gitRepoSsh} cl`);
   }
   catch (error) {
     log('\nFAILED TO CLONE:\n');
@@ -31,6 +33,10 @@ function clone() {
     log('\nXXXYYYZZZZ');
     log('hr');
   }
+}
+
+function exec(...args) {
+  execSync(...args, { stdio: 'pipe' });
 }
 
 function log(...args) {
