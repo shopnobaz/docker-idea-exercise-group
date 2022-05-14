@@ -33,11 +33,12 @@ echo "REMOVING THE IMAGE $REPO_NAME-git-cloner";
 docker image rm -f $REPO_NAME-git-cloner
 echo ""
 
-#docker run \
-#-v $REPO_NAME-storage:/storage \
-#-v /var/run/docker.sock:/var/run/docker.sock \
-#-ti \
-#docker
+docker run \
+--name $REPO_NAME-composer-runner \
+-v $REPO_NAME-storage:/storage \
+-v /var/run/docker.sock:/var/run/docker.sock \
+docker \
+sh -c "cd /storage/branches && pwd && ls && docker-compose up -d"
 
 # for later
 # -v /var/run/docker.sock:/var/run/docker.sock

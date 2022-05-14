@@ -107,32 +107,40 @@ function checkoutAllBranches() {
   buildComposeFile(branches);
 
   log('hr');
-  log('All done...\n');
+  log('All done from git-cloner...\n');
 }
 
 function buildComposeFile(branches) {
-  let port = 3050;
-  let yml = ['version: "3.9"', 'services:'];
+  let port = 3000;
+  let yml = ['version: "3.9"', '', 'services:'];
   for (let branch of branches) {
     if (fs.existsSync(`/storage/branches/${branch}/Dockerfile`)) {
       yml = [
         ...yml,
-        `  ${branch}`,
-        `    build: /storage/branches/${branch}/Dockerfile`,
+        `  ${branch}:`,
+        `    build: /storage/branches/${branch}`,
         `    ports:`,
-        `      -"${port}:${port}`,
+        `      - "${port}:${port}"`,
         `    volumes:`,
-        `      - ${gitRepoName} - storage: /storage`,
+        `      - ${gitRepoName}-storage:/storage`,
         `    environment:`,
         `       PORT: ${port}`
       ];
       port++;
     }
   }
+  yml = [
+    ...yml,
+    '',
+    'volumes:',
+    `  ${gitRepoName}-storage:`,
+    `    external: true`
+  ];
   yml = yml.join('\n');
   log('hr');
-  log('BUILDING docker-compose.yml:');
+  log('BUILDING docker-compose.yml:\n');
   log(yml);
+  fs.writeFileSync('/storage/branches/docker-compose.yml', yml, 'utf-8');
 }
 
 function exec(...args) {
