@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { execSync } = require('child_process');
 
 const {
@@ -12,6 +13,7 @@ const gitRepoSsh = 'git@github.com:'
 clone();
 
 function clone() {
+
   log('\nUsing Git credentials from host:');
   log('hr');
   log('username:', gitUsername);
@@ -20,19 +22,86 @@ function clone() {
   log('hr');
 
   try {
-    exec(`git config --global user.name "${gitUsername}"`);
-    exec(`git config --global user.name "${gitEmail}"`);
-    exec(`git clone ${gitRepoSsh} cl`);
+    exec([
+      // copy ss-key to .ssh folder
+      'cp -r ssh-key /root/.ssh',
+      // start ssh agent
+      'eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519',
+      // set git username and email
+      `git config --global user.name "${gitUsername}"`,
+      `git config --global user.email "${gitEmail}"`,
+      // add github.com to known host (this avoids question before clone)
+      'ssh-keyscan github.com >> /root/.ssh/known_hosts',
+      // clone
+      `git clone ${gitRepoSsh} cloned-repo`
+    ].join(' && '));
   }
+
   catch (error) {
     log('\nFAILED TO CLONE:\n');
     log(error + '');
     log('hr');
     log('NOTE:');
-    log('You need to add the following SSH-key to your GitHub account:');
-    log('\nXXXYYYZZZZ');
+    log('I am a Docker container and I have copied your global');
+    log('git username and email from the host - your machine.')
+    log('So if you have set those ok the one thing missing is a')
+    log('SSH key...')
+    log('');
+    log('You need to add this SSH-key to your GitHub account:');
+    log('\n' + fs.readFileSync('./ssh-key/id_ed25519.pub', 'utf-8'));
     log('hr');
+    process.exit();
   }
+
+  // Cloned successfully
+  checkoutAllBranches();
+}
+
+function checkoutAllBranches() {
+  // Get all branch names
+  let branches = execSync(
+    'cd cloned-repo && git branch -av',
+    { encoding: 'utf8' }
+  ).toString()
+    .split('\n')
+    .map(x => x.replace('* ', '*').trim())
+    .map(x => x.split(' ')[0])
+    .filter(x => x.indexOf('remotes/origin') === 0 && x !== 'remotes/origin/HEAD')
+    .map(x => x.replace('remotes/origin/', ''));
+
+  log('Found the following remote branches:');
+  log(branches.join('\n'));
+  log('hr');
+  log('Checking out all of them...');
+
+  // Copy the cloned repo folder once for each branch
+  try {
+    exec([
+      'mkdir /storage/branches',
+      ...branches
+        .map(branch => `cp -r cloned-repo /storage/branches/${branch}`)
+    ].join(' && '));
+  } catch (e) {
+    log('\nError during copying of cloned repo');
+    log(e + '');
+  }
+
+  // Checkout every branch (in its corresponding folder)
+  try {
+    branches.forEach(branch => {
+      exec([
+        `cd /storage/branches/${branch}`,
+        `git checkout ${branch}`
+      ].join(' && '))
+    });
+  }
+  catch (e) {
+    log('\nError during checkout of branches');
+    log(e + '');
+  }
+
+  log('hr');
+  log('All done...');
 }
 
 function exec(...args) {

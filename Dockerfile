@@ -13,8 +13,5 @@ WORKDIR /app
 # to the work dir
 COPY ./copy-to-docker-container .
 
-# install npm modules
-RUN npm install
-
 # Run the git-cloner.js file from copy-to-docker-container
 CMD node git-cloner.js
