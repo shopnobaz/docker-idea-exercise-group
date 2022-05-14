@@ -104,8 +104,35 @@ function checkoutAllBranches() {
     log(e + '');
   }
 
+  buildComposeFile(branches);
+
   log('hr');
   log('All done...\n');
+}
+
+function buildComposeFile(branches) {
+  let port = 3050;
+  let yml = ['version: "3.9"', 'services:'];
+  for (let branch of branches) {
+    if (fs.existsSync(`/storage/branches/${branch}/Dockerfile`)) {
+      yml = [
+        ...yml,
+        `  ${branch}`,
+        `    build: /storage/branches/${branch}/Dockerfile`,
+        `    ports:`,
+        `      -"${port}:${port}`,
+        `    volumes:`,
+        `      - ${gitRepoName} - storage: /storage`,
+        `    environment:`,
+        `       PORT: ${port}`
+      ];
+      port++;
+    }
+  }
+  yml = yml.join('\n');
+  log('hr');
+  log('BUILDING docker-compose.yml:');
+  log(yml);
 }
 
 function exec(...args) {
