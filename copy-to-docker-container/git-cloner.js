@@ -5,7 +5,8 @@ const {
   GIT_REPO_NAME: gitRepoName,
   GIT_REPO_URL: gitRepoUrl,
   GIT_USERNAME: gitUsername,
-  GIT_EMAIL: gitEmail
+  GIT_EMAIL: gitEmail,
+  HOST_REPO_PATH: hostRepoPath
 } = process.env;
 
 const gitRepoSsh = 'git@github.com:'
@@ -123,6 +124,9 @@ function buildComposeFile(branches) {
         `      - "${port}:${port}"`,
         `    volumes:`,
         `      - ${gitRepoName}-storage:/storage`,
+        `      - type: bind`,
+        `        source: ${hostRepoPath}`,
+        `        target: /hostRepo`,
         `    environment:`,
         `       PORT: ${port}`
       ];

@@ -21,6 +21,7 @@ docker run \
 -e GIT_USERNAME=$(git config --global user.name) \
 -e GIT_EMAIL=$(git config --global user.email) \
 -e GIT_REPO_NAME=$REPO_NAME \
+-e HOST_REPO_PATH=$(pwd) \
 $REPO_NAME-git-cloner
 
 ### remove container
