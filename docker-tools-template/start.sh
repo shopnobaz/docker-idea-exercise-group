@@ -19,6 +19,7 @@ then
   echo ""
   echo "Run ./create-docker-tools.sh in the docker branch"
   echo "to create git ignored start and stop scripts!"
+  echo ""
   exit 1
 fi
 
