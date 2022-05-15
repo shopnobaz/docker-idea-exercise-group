@@ -3,6 +3,19 @@
 ### get the name of the repository
 REPO_NAME=$(basename -s .git `git config --get remote.origin.url`)
 
+## get the name of the checked out branch
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+
+if [[ "$BRANCH_NAME" == "dockerx" ]]
+then
+  echo ""
+  echo "I WOULD LOVE TO START YOUR DOCKER COMPOSE STACK BUT:"
+  echo "Do not start from the docker branch!"
+  echo "Instead start from the branch you want to bind mount!"
+  echo ""
+  exit 1
+fi
+
 echo "CREATING DOCKER VOLUME $REPO_NAME-storage"
 ### remove volume if it exists already
 docker volume rm -f $REPO_NAME-storage
@@ -21,6 +34,7 @@ docker run \
 -e GIT_USERNAME=$(git config --global user.name) \
 -e GIT_EMAIL=$(git config --global user.email) \
 -e GIT_REPO_NAME=$REPO_NAME \
+-e GIT_BRANCH_NAME=$BRANCH_NAME \
 -e HOST_REPO_PATH=$(pwd) \
 $REPO_NAME-git-cloner
 

@@ -3,6 +3,7 @@ const { execSync } = require('child_process');
 
 const {
   GIT_REPO_NAME: gitRepoName,
+  GIT_BRANCH_NAME: gitBranchName,
   GIT_REPO_URL: gitRepoUrl,
   GIT_USERNAME: gitUsername,
   GIT_EMAIL: gitEmail,
