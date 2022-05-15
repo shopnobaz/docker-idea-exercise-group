@@ -1,7 +1,7 @@
-# Ignore docker-tools folder
-# (it should be created by copying docker-tools
-#  there is shell sript that does this in docker branch)
-docker-tools
+# Ignore docker-tools folder and start and stop scripts
+/docker-tools
+/start
+/stop
 
 # Remove annoying hidden Mac files
 .DS_Store
