@@ -38,8 +38,8 @@ docker run \
 -v $REPO_NAME-storage:/storage \
 -v /var/run/docker.sock:/var/run/docker.sock \
 docker \
-sh -c "cd /storage/branches && pwd && ls && docker-compose up -d"
+sh -c "cd /storage/branches && export COMPOSE_PROJECT_NAME=$REPO_NAME && docker-compose up -d"
 
-# for later
-# -v /var/run/docker.sock:/var/run/docker.sock
-# -v "$(pwd)/share:/share" \
+### remove container
+echo "REMOVING THE CONTAINER $REPO_NAME-composer-runner";
+docker container rm -f $REPO_NAME-composer-runner

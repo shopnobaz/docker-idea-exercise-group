@@ -111,8 +111,8 @@ function checkoutAllBranches() {
 }
 
 function buildComposeFile(branches) {
-  let port = 3000;
-  let yml = ['version: "3.9"', '', 'services:'];
+  let port = 4500;
+  let yml = ['version: "3.8"', '', 'services:'];
   for (let branch of branches) {
     if (fs.existsSync(`/storage/branches/${branch}/Dockerfile`)) {
       yml = [
