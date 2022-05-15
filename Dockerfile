@@ -2,7 +2,7 @@
 FROM node:16.15-buster
 
 # Set a work dir (working directory)
-WORKDIR /storage/branches/dev-frontend
+WORKDIR /storage/branches/main-frontend
 
 # Run necessary start commands
 CMD npm install && npm run dev
