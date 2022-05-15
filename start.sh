@@ -16,6 +16,7 @@ then
   exit 1
 fi
 
+echo ""
 echo "CREATING DOCKER VOLUME $REPO_NAME-storage"
 ### remove volume if it exists already
 docker volume rm -f $REPO_NAME-storage
