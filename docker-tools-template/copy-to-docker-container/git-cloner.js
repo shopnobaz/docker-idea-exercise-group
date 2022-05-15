@@ -117,11 +117,13 @@ function buildComposeFile(branches) {
   let yml = ['version: "3.8"', '', 'services:'];
   for (let branch of branches) {
     if (fs.existsSync(`/storage/branches/${branch}/Dockerfile`)) {
+      let workingDir = gitBranchName === branch ?
+        `/hostRepo` : `/storage/branches/${branch}`
       yml = [
         ...yml,
         `  ${branch}:`,
         `    build: /storage/branches/${branch}`,
-        `    working_dir: /storage/branches/${branch}`,
+        `    working_dir: ${workingDir}`,
         `    ports:`,
         `      - "${port}:${port}"`,
         `    volumes:`,
