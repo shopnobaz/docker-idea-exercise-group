@@ -72,10 +72,10 @@ function checkoutAllBranches() {
     .filter(x => x.indexOf('remotes/origin') === 0 && x !== 'remotes/origin/HEAD')
     .map(x => x.replace('remotes/origin/', ''));
 
-  log('Found the following remote branches:');
+  log('Found the following remote branches:\n');
   log(branches.join('\n'));
   log('hr');
-  log('Checking out all of them to a Docker volume:');
+  log('Checking out all of them to a Docker volume:\n');
   log(`${gitRepoName}-storage`);
 
   // Copy the cloned repo folder once for each branch

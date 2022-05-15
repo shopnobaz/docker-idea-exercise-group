@@ -33,10 +33,12 @@ echo "REMOVING THE IMAGE $REPO_NAME-git-cloner";
 docker image rm -f $REPO_NAME-git-cloner
 echo ""
 
-### Create a container based on the official docker image
+### create a container based on the official docker image
 ### that runs docker (mounted as a socket)
 ### and docker and docker compose commands inside it
 ### Run docker compose on dynamically created yml file.
+echo "CREATING THE CONTAINER $REPO_NAME-composer-runner"
+echo "--> running docker-compose up -d"
 docker run \
 --name $REPO_NAME-composer-runner \
 -v $REPO_NAME-storage:/storage \
@@ -44,7 +46,11 @@ docker run \
 docker \
 sh -c "cd /storage/branches && export COMPOSE_PROJECT_NAME=$REPO_NAME && docker-compose up -d"
 
-### Remove the docker composer-runner container
+### remove the docker composer-runner container
 echo ""
 echo "REMOVING THE CONTAINER $REPO_NAME-composer-runner"
 docker container rm -f $REPO_NAME-composer-runner
+
+echo ""
+echo "Up and running! :)"
+echo ""
