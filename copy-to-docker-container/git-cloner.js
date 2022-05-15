@@ -121,6 +121,7 @@ function buildComposeFile(branches) {
         ...yml,
         `  ${branch}:`,
         `    build: /storage/branches/${branch}`,
+        `    working_dir: /storage/branches/${branch}`,
         `    ports:`,
         `      - "${port}:${port}"`,
         `    volumes:`,
