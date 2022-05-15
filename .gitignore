@@ -1,3 +1,8 @@
+# Ignore docker-tools folder
+# (it should be created by copying docker-tools
+#  there is shell sript that does this in docker branch)
+docker-tools
+
 # Remove annoying hidden Mac files
 .DS_Store
 
