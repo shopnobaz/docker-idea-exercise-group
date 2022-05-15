@@ -10,7 +10,7 @@ REPO_NAME=$(basename -s .git `git config --get remote.origin.url`)
 ## get the name of the checked out branch
 BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
 
-if [[ "$BRANCH_NAME" == "dockerx" ]]
+if [[ "$BRANCH_NAME" == "docker" ]]
 then
   echo ""
   echo "I WOULD LOVE TO START YOUR DOCKER COMPOSE STACK BUT:"
