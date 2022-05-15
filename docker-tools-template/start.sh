@@ -1,7 +1,12 @@
 #!/bin/sh
 
-# Cd to the directory where this script is located
+# Get the dir path of the dir where this script is located
 DIRNAME=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+# Get the repo dir path
+REPO_DIR="$(dirname "$DIRNAME")"
+
+# Cd to the dir where this script is located
 cd $DIRNAME
 
 ### get the name of the repository
@@ -18,7 +23,7 @@ then
   echo "Instead start from the branch you want to bind mount!"
   echo ""
   echo "Run ./create-docker-tools.sh in the docker branch"
-  echo "to create git ignored start and stop scripts!"
+  echo "to create start and stop scripts available everywhere!"
   echo ""
   exit 1
 fi
@@ -43,7 +48,7 @@ docker run \
 -e GIT_EMAIL=$(git config --global user.email) \
 -e GIT_REPO_NAME=$REPO_NAME \
 -e GIT_BRANCH_NAME=$BRANCH_NAME \
--e HOST_REPO_PATH=$(pwd) \
+-e HOST_REPO_PATH=$REPO_DIR \
 $REPO_NAME-git-cloner
 
 ### remove container
