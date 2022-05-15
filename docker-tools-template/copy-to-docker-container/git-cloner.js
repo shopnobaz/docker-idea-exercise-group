@@ -7,8 +7,11 @@ const {
   GIT_REPO_URL: gitRepoUrl,
   GIT_USERNAME: gitUsername,
   GIT_EMAIL: gitEmail,
-  HOST_REPO_PATH: hostRepoPath
+  HOST_REPO_PATH: hostRepoPathAlmost
 } = process.env;
+
+const hostRepoPath = hostRepoPathAlmost
+  .replaceAll('\\\\', '/').split('/docker-tools');
 
 const gitRepoSsh = 'git@github.com:'
   + gitRepoUrl.split('github.com/')[1];
