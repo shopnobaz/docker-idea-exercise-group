@@ -134,12 +134,13 @@ function buildComposeFile(branches) {
         `    ports:`,
         `      - "${port}:${port}"`,
         `    volumes:`,
-        `      - ${gitRepoName}-storage:/storage`,
         ...(bind ? [
           `      - type: bind`,
           `        source: ${hostRepoPath}`,
           `        target: /hostRepo`
-        ] : []),
+        ] : [
+          `      - ${gitRepoName}-storage:/storage`
+        ]),
         `    environment:`,
         `       PORT: ${port}`
       ];
