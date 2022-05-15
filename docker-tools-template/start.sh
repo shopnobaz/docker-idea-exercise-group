@@ -17,6 +17,8 @@ then
   echo "Do not start from the docker branch!"
   echo "Instead start from the branch you want to bind mount!"
   echo ""
+  echo "Run ./create-docker-tools.sh in the docker branch"
+  echo "to create git ignored start and stop scripts!"
   exit 1
 fi
 
