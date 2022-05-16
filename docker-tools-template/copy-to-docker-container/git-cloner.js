@@ -13,6 +13,17 @@ const {
 const gitRepoSsh = 'git@github.com:'
   + gitRepoUrl.split('github.com/')[1];
 
+let ds;
+try {
+  ds = require('./dockerSettings.json');
+}
+catch {
+  log('Syntax error in dockerSettings.json\n');
+}
+const dockerSettings = ds;
+console.log(dockerSettings);
+process.exit();
+
 function exec(...args) {
   // Silent execution
   execSync(...args, { stdio: 'pipe' });

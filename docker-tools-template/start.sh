@@ -15,21 +15,29 @@ REPO_NAME=$(basename -s .git `git config --get remote.origin.url`)
 ## get the name of the checked out branch
 BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
 
-if [[ "$BRANCH_NAME" == "docker" ]]
-then
+## dockerSettings.json file path
+DOCKER_SETTINGS_FILE="$REPO_DIR/dockerSettings.json"
+
+if [ ! -f "$DOCKER_SETTINGS_FILE" ]; then
   echo ""
-  echo "I WOULD LOVE TO START YOUR DOCKER COMPOSE STACK BUT:"
-  echo "Do not start from the docker branch!"
-  echo "Instead start from the branch you want to bind mount!"
+  echo "Can not compose containers because there is no"
+  echo "dockerSettings.json file found in this branch..."
   echo ""
-  echo "Run ./create-docker-tools.sh in the docker branch"
-  echo "to create start and stop scripts available everywhere!"
+  echo "Please create one. This is an example:"
+  echo ""
+  cat ./dockerSettingsExample.json
+  echo ""
   echo ""
   exit 1
 fi
 
+## copy dockerSettings.json into the copy-to-docker-folder
+rm copy-to-docker-container/dockerSettings.json
+cp $DOCKER_SETTINGS_FILE copy-to-docker-container/dockerSettings.json
+
 echo ""
 echo "CREATING DOCKER VOLUME $REPO_NAME-storage"
+
 ### remove volume if it exists already
 docker volume rm -f $REPO_NAME-storage
 
@@ -60,6 +68,8 @@ echo ""
 echo "REMOVING THE IMAGE $REPO_NAME-git-cloner";
 docker image rm -f $REPO_NAME-git-cloner
 echo ""
+
+exit 1
 
 ### create a container based on the official docker image
 ### that runs docker (mounted as a socket)
