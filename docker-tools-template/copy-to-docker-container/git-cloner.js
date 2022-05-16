@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { execSync } = require('child_process');
+const { exit } = require('process');
 
 const {
   GIT_REPO_NAME: gitRepoName,
@@ -13,14 +14,7 @@ const {
 const gitRepoSsh = 'git@github.com:'
   + gitRepoUrl.split('github.com/')[1];
 
-let ds;
-try {
-  ds = require('./dockerSettings.json');
-}
-catch {
-  log('Syntax error in dockerSettings.json\n');
-}
-const dockerSettings = ds;
+const dockerSettings = readAndParseDockerSettings();
 console.log(dockerSettings);
 process.exit();
 
@@ -33,6 +27,32 @@ function log(...args) {
   // Log things to the terminal/console
   args[0] = args[0] === '-' ? '_'.repeat(70) + '\n' : args[0];
   console.log(...args);
+}
+
+function readAndParseDockerSettings() {
+  let ds;
+  try {
+    ds = require('./dockerSettings.json');
+  }
+  catch {
+    log('Syntax error in dockerSettings.json\n');
+  }
+  ds = ds
+    .filter(x => typeof x === 'string' || x instanceof Array)
+    .filter(x => x !== '' && x.slice(0, 2) !== '//')
+    .map(x => typeof x === 'string' ? { branch: x, routes: [] } : x)
+    .filter((x, i, a) => x instanceof Array ?
+      (a[i - 1].routes = x) && false : true);
+  let port = 4500;
+  for (let x of ds) {
+    let hostPort = x.routes.find(x => typeof x === 'number');
+    x.routes = x.routes
+      .filter(x => typeof x === 'string')
+      .map(x => x.slice(-1) !== '/' ? x + '/' : x)
+    hostPort && (x.hostPort = hostPort);
+    x.port = port++;
+  }
+  return ds;
 }
 
 function clone() {
