@@ -13,16 +13,24 @@ const {
 const gitRepoSsh = 'git@github.com:'
   + gitRepoUrl.split('github.com/')[1];
 
-clone();
+function exec(...args) {
+  // Silent execution
+  execSync(...args, { stdio: 'pipe' });
+}
+
+function log(...args) {
+  // Log things to the terminal/console
+  args[0] = args[0] === '-' ? '_'.repeat(70) + '\n' : args[0];
+  console.log(...args);
+}
 
 function clone() {
-
   log('\nUsing Git credentials from host:');
-  log('hr');
+  log('-');
   log('username:', gitUsername);
   log('email:', gitEmail);
   log('repository:', gitRepoSsh);
-  log('hr');
+  log('-');
 
   try {
     exec([
@@ -45,7 +53,7 @@ function clone() {
   catch (error) {
     log('\nFAILED TO CLONE:\n');
     log(error + '');
-    log('hr');
+    log('-');
     log('NOTE:');
     log('I am a Docker container and I have copied your global');
     log('git username and email from the host - your machine.')
@@ -54,7 +62,7 @@ function clone() {
     log('');
     log('You need to add this SSH-key to your GitHub account:');
     log('\n' + fs.readFileSync('./ssh-key/id_ed25519.pub', 'utf-8'));
-    log('hr');
+    log('-');
     process.exit();
   }
 
@@ -76,7 +84,7 @@ function checkoutAllBranches() {
 
   log('Found the following remote branches:\n');
   log(branches.join('\n'));
-  log('hr');
+  log('-');
   log('Checking out all of them to a Docker volume:\n');
   log(`${gitRepoName}-storage`);
 
@@ -108,7 +116,7 @@ function checkoutAllBranches() {
 
   buildComposeFile(branches);
 
-  log('hr');
+  log('-');
   log('All done from git-cloner...\n');
 }
 
@@ -152,19 +160,10 @@ function buildComposeFile(branches) {
     `    external: true`
   ];
   yml = yml.join('\n');
-  log('hr');
+  log('-');
   log('BUILDING docker-compose.yml:\n');
   log(yml);
   fs.writeFileSync('/storage/branches/docker-compose.yml', yml, 'utf-8');
 }
 
-function exec(...args) {
-  // Silent execution
-  execSync(...args, { stdio: 'pipe' });
-}
-
-function log(...args) {
-  // Log things to the terminal/console
-  args[0] = args[0] === 'hr' ? '_'.repeat(70) + '\n' : args[0];
-  console.log(...args);
-}
+clone();
