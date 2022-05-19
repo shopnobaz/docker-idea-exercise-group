@@ -6,5 +6,9 @@
   "main-frontend",
   [
     4000
+  ],
+  "main-backend",
+  [
+    5000
   ]
 ]

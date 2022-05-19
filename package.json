@@ -1,0 +1,20 @@
+{
+  "name": "docker-idea",
+  "version": "1.0.0",
+  "description": "Hello developer!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ironboy/docker-idea.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ironboy/docker-idea/issues"
+  },
+  "homepage": "https://github.com/ironboy/docker-idea#readme"
+}
