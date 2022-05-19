@@ -50,6 +50,9 @@ function readAndParseDockerSettings() {
     hostPort && (x.hostPort = hostPort);
     x.port = port++;
   }
+  log('-');
+  log('PARSED dockerSettings.json AS:');
+  log(JSON.stringify(ds, null, '  '));
   return ds;
 }
 
@@ -195,6 +198,9 @@ function buildComposeFile() {
   log('BUILDING docker-compose.yml:\n');
   log(yml);
   fs.writeFileSync('/storage/branches/docker-compose.yml', yml, 'utf-8');
+  fs.writeFileSync('/storage/branches/dockerSettings.json',
+    JSON.stringify(dockerSettings, null, '  '), 'utf-8');
+
 }
 
 // Startup everything
