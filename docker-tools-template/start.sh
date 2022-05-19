@@ -86,14 +86,21 @@ echo ""
 ### and docker and docker compose commands inside it
 ### Run docker compose on dynamically created yml file.
 #
-# Important: We mount a unix socket that makes the Docker CLI
-# in the container use the Docker daemon on the host...
+### Important: We mount a unix socket that makes the Docker CLI
+### in the container use the Docker daemon on the host...
+### unix sockets must be written with one start slash in MacOS/Linux
+### and two start slashes in Windows:
+SOCKET_PATH="/var/run/docker.sock"
+if [[ "$OSTYPE" =~ ^msys ]]; then
+  SOCKET_PATH="/$SOCKET_PATH"
+fi
+
 echo "CREATING THE CONTAINER $REPO_NAME-composer-runner"
 echo "--> running docker-compose up -d"
 docker run \
 --name $REPO_NAME-composer-runner \
 -v $REPO_NAME-storage:/storage \
---mount type=bind,source="/var/run/docker.sock",target="/var/run/docker.sock" \
+--mount type=bind,source="$SOCKET_PATH",target="/var/run/docker.sock" \
 docker \
 sh -c "cd /storage/branches && export COMPOSE_PROJECT_NAME=$REPO_NAME && docker-compose up -d"
 
