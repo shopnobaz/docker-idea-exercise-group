@@ -37,27 +37,55 @@ This will give you two shell scripts (that are git-ignored and thus available in
 
 (You will also see a git ignored folder called docker-tools. There is *no need* for you to work in this folder.)
 
-### In your branch
-Make sure there is: A docker file which specifies at least:
+## In your branch
+
+### Create a Dockerfile
+Make sure there is: A file named **Dockerfile** which specifies at least:
 * a base image (FROM) 
 * and a command to run (CMD) when the server starts.
 
 Example:
 
 ```
+# start with a debian node image
+FROM node:16.15-buster
+
+# run necessary start commands
+CMD npm install && node index
+```
+
+**Important:** - do not specify a WORK DIR. It will be set to where the code for your branch is checked out within Dockers container/named volume systems automatically.
+
+### Create a dockerSettings.json file
+The dockerSettings.json should contain info about which branches you want to create containers from (your own one and other branches with services you want to communicate with) and on which port they should be running:
+
+```json
+[
+  "dev-frontend",
+  [
+    4001
+  ],
+  "main-frontend",
+  [
+    4000
+  ]
+]
+```
+
+**Coming soon:** You will soon be able to add proxy routes for the reverse proxy alongside the port numbers as well!
 
 
-### Important! Let the system decide which port you are running your service on
+### Important! Listen to the environment variable PORT when you start your service!
 
-We will send an environment variable called PORT to your container (each branch runs in a container that you setup by writing a Dockerfile in your branch).
+The system sends an environment variable called PORT to your container (each branch runs in a container that you setup by writing a Dockerfile in your branch).
 
 Start your service on this port!
 
-#### I don't know how to start my service on a specific port
+### I don't know how to start my service on a specific port
 
 Since you are in control of your microservice and its technology stack it is up to you investigate how to start in on a particular port, but here are some suggestion for technologies we know are going to be used in this project
 
-##### React using the Vite development server
+#### React using the Vite development server
 
 In your **config.vite.js** file:
 
@@ -72,7 +100,7 @@ export default defineConfig({
 })
 ```
 
-##### Node.js/Express
+#### Node.js/Express
 
 ```js
 // Where you start your Express server
