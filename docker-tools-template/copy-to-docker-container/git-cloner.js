@@ -71,7 +71,8 @@ function clone() {
     if (!fs.existsSync('./ssh-key/id_ed25519.pub')) {
       exec([
         'cd ssh-key',
-        `ssh-keygen -t ed25519 -N "" -C "${gitEmail}" -f id_ed25519`
+        `ssh-keygen -t ed25519 -N "" -C "${gitEmail}" -f id_ed25519`,
+        `chmod 777 *`
       ].join(' && '));
     }
 
@@ -88,6 +89,7 @@ function clone() {
       // add github.com to known host (this avoids question before clone)
       'ssh-keyscan github.com >> /root/.ssh/known_hosts',
       // clone
+      `cd /storage`,
       `git clone ${gitRepoSsh} cloned-repo`
     ].join(' && '));
   }
@@ -99,6 +101,7 @@ function clone() {
 
 // Verbose error message on clone error with info about ssh key
 function verboseCloneError(error) {
+
   log('\nFAILED TO CLONE:\n');
   log(error + '');
   log('-');
@@ -136,12 +139,14 @@ function checkoutAllBranches() {
     exec([
       'mkdir /storage/branches',
       ...branches
-        .map(branch => `cp -r cloned-repo /storage/branches/${branch}`)
+        .map(branch => `cp -r /storage/cloned-repo /storage/branches/${branch}`)
     ].join(' && '));
   } catch (e) {
     log('\nError during copying of cloned repo');
     log(e + '');
   }
+  // Remove original clone
+  exec('rm -f -r /storage/cloned-repo');
 
   // Checkout every branch (in its corresponding folder)
   try {
