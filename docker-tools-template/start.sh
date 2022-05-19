@@ -69,8 +69,6 @@ echo "REMOVING THE IMAGE $REPO_NAME-git-cloner";
 docker image rm -f $REPO_NAME-git-cloner
 echo ""
 
-exit 1
-
 ### create a container based on the official docker image
 ### that runs docker (mounted as a socket)
 ### and docker and docker compose commands inside it

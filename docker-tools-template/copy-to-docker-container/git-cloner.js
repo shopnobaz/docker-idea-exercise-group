@@ -1,6 +1,5 @@
 const fs = require('fs');
 const { execSync } = require('child_process');
-const { exit } = require('process');
 
 const {
   GIT_REPO_NAME: gitRepoName,
@@ -15,8 +14,6 @@ const gitRepoSsh = 'git@github.com:'
   + gitRepoUrl.split('github.com/')[1];
 
 const dockerSettings = readAndParseDockerSettings();
-console.log(dockerSettings);
-process.exit();
 
 function exec(...args) {
   // Silent execution
@@ -29,6 +26,7 @@ function log(...args) {
   console.log(...args);
 }
 
+// Translate docker settings to a more machine readable format
 function readAndParseDockerSettings() {
   let ds;
   try {
@@ -43,7 +41,7 @@ function readAndParseDockerSettings() {
     .map(x => typeof x === 'string' ? { branch: x, routes: [] } : x)
     .filter((x, i, a) => x instanceof Array ?
       (a[i - 1].routes = x) && false : true);
-  let port = 4500;
+  let port = 3000;
   for (let x of ds) {
     let hostPort = x.routes.find(x => typeof x === 'number');
     x.routes = x.routes
@@ -55,6 +53,7 @@ function readAndParseDockerSettings() {
   return ds;
 }
 
+// Clone the repo
 function clone() {
   log('\nUsing Git credentials from host:');
   log('-');
@@ -80,43 +79,38 @@ function clone() {
       `git clone ${gitRepoSsh} cloned-repo`
     ].join(' && '));
   }
-
-  catch (error) {
-    log('\nFAILED TO CLONE:\n');
-    log(error + '');
-    log('-');
-    log('NOTE:');
-    log('I am a Docker container and I have copied your global');
-    log('git username and email from the host - your machine.')
-    log('So if you have set those ok the one thing missing is a')
-    log('SSH key...')
-    log('');
-    log('You need to add this SSH-key to your GitHub account:');
-    log('\n' + fs.readFileSync('./ssh-key/id_ed25519.pub', 'utf-8'));
-    log('-');
-    process.exit();
-  }
+  catch (error) { verboseCloneError(); }
 
   // Cloned successfully
   checkoutAllBranches();
 }
 
-function checkoutAllBranches() {
-  // Get all branch names
-  let branches = execSync(
-    'cd cloned-repo && git branch -av',
-    { encoding: 'utf8' }
-  ).toString()
-    .split('\n')
-    .map(x => x.replace('* ', '*').trim())
-    .map(x => x.split(' ')[0])
-    .filter(x => x.indexOf('remotes/origin') === 0 && x !== 'remotes/origin/HEAD')
-    .map(x => x.replace('remotes/origin/', ''));
+// Verbose error message on clone error with info about ssh key
+function verboseCloneError() {
+  log('\nFAILED TO CLONE:\n');
+  log(error + '');
+  log('-');
+  log('NOTE:');
+  log('I am a Docker container and I have copied your global');
+  log('git username and email from the host - your machine.')
+  log('So if you have set those ok the one thing missing is a')
+  log('SSH key...')
+  log('');
+  log('You need to add this SSH-key to your GitHub account:');
+  log('\n' + fs.readFileSync('./ssh-key/id_ed25519.pub', 'utf-8'));
+  log('-');
+  process.exit();
+}
 
-  log('Found the following remote branches:\n');
+// Checkout all branches in separate folders on the named volume
+function checkoutAllBranches() {
+
+  // Get all branch names
+  let branches = dockerSettings.map(x => x.branch);
+  log('Checking out the branches you requested in dockerSettings.json:');
   log(branches.join('\n'));
   log('-');
-  log('Checking out all of them to a Docker volume:\n');
+  log('Each of them to a separate folder on the Docker volume:\n');
   log(`${gitRepoName}-storage`);
 
   // Copy the cloned repo folder once for each branch
@@ -151,10 +145,17 @@ function checkoutAllBranches() {
   log('All done from git-cloner...\n');
 }
 
-function buildComposeFile(branches) {
-  let port = 4500;
+// Build the docker-compose.yml file
+function buildComposeFile() {
+
   let yml = ['version: "3.8"', '', 'services:'];
-  for (let branch of branches) {
+  for (let { branch, hostPort, port } of dockerSettings) {
+
+    // for now use the hostPort (if it exists) as internal port
+    // the vite developer server gets confused otherwise
+    // looking for a solution to this
+    port = hostPort || port;
+
     if (fs.existsSync(`/storage/branches/${branch}/Dockerfile`)) {
       let bind = gitBranchName === branch
       let name = gitRepoName + '-' + (
@@ -168,7 +169,7 @@ function buildComposeFile(branches) {
         `    build: /storage/branches/${branch}`,
         `    working_dir: ${workingDir}`,
         `    ports:`,
-        `      - "${port}:${port}"`,
+        `      - "${hostPort}:${port}"`,
         `    volumes:`,
         ...(bind ? [
           `      - type: bind`,
@@ -180,7 +181,6 @@ function buildComposeFile(branches) {
         `    environment:`,
         `       PORT: ${port}`
       ];
-      port++;
     }
   }
   yml = [
@@ -197,4 +197,5 @@ function buildComposeFile(branches) {
   fs.writeFileSync('/storage/branches/docker-compose.yml', yml, 'utf-8');
 }
 
+// Startup everything
 clone();

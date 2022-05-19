@@ -1,19 +1,10 @@
 [
-  "dev-proxy",
-  [
-    3000
-  ],
   "dev-frontend",
   [
-    "/"
+    4001
   ],
-  "dev-backend",
+  "main-frontend",
   [
-    "/api",
     4000
-  ],
-  "sql",
-  [
-    3306
   ]
 ]
