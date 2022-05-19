@@ -1,4 +1,5 @@
 #!/bin/sh
+#set -e # exit on failed commands
 
 # Get the dir path of the dir where this script is located
 DIRNAME=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
@@ -48,8 +49,10 @@ docker volume create $REPO_NAME-storage
 docker build -f git-cloner.Dockerfile -t $REPO_NAME-git-cloner .
 
 ### run image as container
+set -e
 docker run \
 --name $REPO_NAME-git-cloner \
+-w /app -v "$DIRNAME/copy-to-docker-container:/app" \
 -v $REPO_NAME-storage:/storage \
 -e GIT_REPO_URL=$(git remote get-url origin) \
 -e GIT_USERNAME=$(git config --global user.name) \
@@ -58,7 +61,7 @@ docker run \
 -e GIT_BRANCH_NAME=$BRANCH_NAME \
 -e HOST_REPO_PATH=$REPO_DIR \
 $REPO_NAME-git-cloner
-
+set +e
 ### remove container
 echo "REMOVING THE CONTAINER $REPO_NAME-git-cloner";
 docker container rm -f $REPO_NAME-git-cloner

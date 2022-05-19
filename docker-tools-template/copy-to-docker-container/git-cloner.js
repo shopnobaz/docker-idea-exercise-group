@@ -66,6 +66,15 @@ function clone() {
   log('-');
 
   try {
+
+    // if the ssh key does not exists then create it
+    if (!fs.existsSync('./ssh-key/id_ed25519.pub')) {
+      exec([
+        'cd ssh-key',
+        `ssh-keygen -t ed25519 -N "" -C "${gitEmail}" -f id_ed25519`
+      ].join(' && '));
+    }
+
     exec([
       // copy ssh-key to .ssh folder
       'cp -r ssh-key /root/.ssh',
@@ -101,8 +110,14 @@ function verboseCloneError(error) {
   log('');
   log('You need to add this SSH-key to your GitHub account:');
   log('\n' + fs.readFileSync('./ssh-key/id_ed25519.pub', 'utf-8'));
+  log('1. Goto Github -> Settings for your account.');
+  log('2. Choose SSH and GPG keys -> New SSH Key.');
+  log('3. Paste the SSH key, give it a title and save it.');
   log('-');
-  process.exit();
+  log('In your terminal:');
+  log('1. Run ./stop');
+  log('2. Run ./start');
+  process.exit(1);
 }
 
 // Checkout all branches in separate folders on the named volume
