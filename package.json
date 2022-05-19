@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ironboy/docker-idea/issues"
   },
-  "homepage": "https://github.com/ironboy/docker-idea#readme"
+  "homepage": "https://github.com/ironboy/docker-idea#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
 }
