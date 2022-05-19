@@ -81,7 +81,7 @@ echo "--> running docker-compose up -d"
 docker run \
 --name $REPO_NAME-composer-runner \
 -v $REPO_NAME-storage:/storage \
--v /var/run/docker.sock:/var/run/docker.sock \
+--mount type=bind,source="/var/run/docker.sock",target="/var/run/docker.sock" \
 docker \
 sh -c "cd /storage/branches && export COMPOSE_PROJECT_NAME=$REPO_NAME && docker-compose up -d"
 
