@@ -1,6 +1,5 @@
-# IN YOUR OWN BRANCH
-# (BASED ON MAIN?)
+# start with a debian node container
+FROM node:16.15-buster
 
-# CREATE A DOCKER FILE
-# AND ADJUST HE dockerSettings.json FILE
-# FOR YOUR NEEDS!
+# Run necessary start commands
+CMD npm install && node index
