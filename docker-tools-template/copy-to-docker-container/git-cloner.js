@@ -82,14 +82,14 @@ function clone() {
       `git clone ${gitRepoSsh} cloned-repo`
     ].join(' && '));
   }
-  catch (error) { verboseCloneError(); }
+  catch (error) { verboseCloneError(error); }
 
   // Cloned successfully
   checkoutAllBranches();
 }
 
 // Verbose error message on clone error with info about ssh key
-function verboseCloneError() {
+function verboseCloneError(error) {
   log('\nFAILED TO CLONE:\n');
   log(error + '');
   log('-');
