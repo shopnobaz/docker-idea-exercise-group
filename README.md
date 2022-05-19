@@ -43,6 +43,32 @@ Since you are in control of your microservice and its technology stack it is up 
 
 #### React using the Vite development server
 
+In your **config.vite.js** file:
+
+```js
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    // use process.env.PORT
+    // to read the environment variable
+    port: process.env.PORT
+  }
+})
+```
+
+#### Node.js/Express
+
+```js
+// Where you start your Express server
+app.listen(process.env.PORT)
+```
+
+#### For database containers etc
+Still create a separate branch with your Dockerfile (and backup like SQL-dumps etc).
+
+Refer to the documentation about the container you are using (MySQL, MariaDB, MongoDB etc) as to how to start the db server on a particular port!
+
+**Note!** If the server/service needs an argument rather than an environment variable then refter to the Docker documentation on how to read environment varialbes in your Dockerfile and pass them along as arguments in your start CMD!
 
 
 
