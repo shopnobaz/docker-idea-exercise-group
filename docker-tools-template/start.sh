@@ -52,7 +52,7 @@ docker build -f git-cloner.Dockerfile -t $REPO_NAME-git-cloner .
 set -e
 docker run \
 --name $REPO_NAME-git-cloner \
--w /app -v "$(pwd)/copy-to-docker-container:/app" \
+--mount type=bind,source="$DIRNAME/copy-to-docker-container",target=/app \
 -v $REPO_NAME-storage:/storage \
 -e GIT_REPO_URL=$(git remote get-url origin) \
 -e GIT_USERNAME=$(git config --global user.name) \
