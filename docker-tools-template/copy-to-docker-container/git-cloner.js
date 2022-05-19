@@ -116,10 +116,8 @@ function verboseCloneError(error) {
   log('1. Goto Github -> Settings for your account.');
   log('2. Choose SSH and GPG keys -> New SSH Key.');
   log('3. Paste the SSH key, give it a title and save it.');
-  log('-');
-  log('In your terminal:');
-  log('1. Run ./stop');
-  log('2. Run ./start');
+  log('4. Run ./start again! :)')
+  log('');
   process.exit(1);
 }
 

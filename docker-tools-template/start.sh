@@ -49,7 +49,6 @@ docker volume create $REPO_NAME-storage
 docker build -f git-cloner.Dockerfile -t $REPO_NAME-git-cloner .
 
 ### run image as container
-set -e
 docker run \
 --name $REPO_NAME-git-cloner \
 --mount type=bind,source="$DIRNAME/copy-to-docker-container",target=/app \
@@ -61,7 +60,17 @@ docker run \
 -e GIT_BRANCH_NAME=$BRANCH_NAME \
 -e HOST_REPO_PATH=$REPO_DIR \
 $REPO_NAME-git-cloner
-set +e
+
+if [ $? -ne 0 ]; then
+  # There was an error with git cloner
+  # Probably no SSH key - the JS script will
+  # instruct the user...
+  # Now: Remove container silently and exit
+  docker container rm -f $REPO_NAME-git-cloner > /dev/null
+  docker image rm -f $REPO_NAME-git-cloner > /dev/null
+  exit 1
+fi
+
 ### remove container
 echo "REMOVING THE CONTAINER $REPO_NAME-git-cloner";
 docker container rm -f $REPO_NAME-git-cloner
@@ -76,6 +85,9 @@ echo ""
 ### that runs docker (mounted as a socket)
 ### and docker and docker compose commands inside it
 ### Run docker compose on dynamically created yml file.
+#
+# Important: We mount a unix socket that makes the Docker CLI
+# in the container use the Docker daemon on the host...
 echo "CREATING THE CONTAINER $REPO_NAME-composer-runner"
 echo "--> running docker-compose up -d"
 docker run \
