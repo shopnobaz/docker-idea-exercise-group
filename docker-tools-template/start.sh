@@ -58,7 +58,6 @@ docker run \
 -e GIT_EMAIL=$(git config --global user.email) \
 -e GIT_REPO_NAME=$REPO_NAME \
 -e GIT_BRANCH_NAME=$BRANCH_NAME \
--e HOST_REPO_PATH=$REPO_DIR \
 $REPO_NAME-git-cloner
 
 if [ $? -ne 0 ]; then
@@ -109,6 +108,20 @@ echo ""
 echo "REMOVING THE CONTAINER $REPO_NAME-composer-runner"
 docker container rm -f $REPO_NAME-composer-runner
 
+### start the currently checked out branch in a container with a bind mount
+### if it has Dockerfile
+cd "$REPO_DIR";
+if [ -f "Dockerfile" ]; then
+  docker build -t $REPO_NAME-bind-mount-$BRANCH_NAME .
+  docker run \
+  --name $REPO_NAME-bind-mount-$BRANCH_NAME \
+  --mount type=bind,source="$REPO_DIR",target=/app \
+  -v $REPO_NAME-storage:/storage \
+  -w /app \
+  $REPO_NAME-bind-mount-$BRANCH_NAME
+fi
+
+### we are done
 echo ""
 echo "Up and running! :)"
 echo ""

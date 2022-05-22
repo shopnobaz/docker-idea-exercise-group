@@ -6,8 +6,7 @@ const {
   GIT_BRANCH_NAME: gitBranchName,
   GIT_REPO_URL: gitRepoUrl,
   GIT_USERNAME: gitUsername,
-  GIT_EMAIL: gitEmail,
-  HOST_REPO_PATH: hostRepoPath
+  GIT_EMAIL: gitEmail
 } = process.env;
 
 const gitRepoSsh = 'git@github.com:'
