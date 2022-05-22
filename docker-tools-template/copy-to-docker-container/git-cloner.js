@@ -178,11 +178,17 @@ function buildComposeFile() {
     port = hostPort || port;
 
     if (fs.existsSync(`/storage/branches/${branch}/Dockerfile`)) {
-      let bind = gitBranchName === branch
-      let name = gitRepoName + '-' + (
-        bind ? `bind-mounted-${branch}` : branch
-      );
-      let workingDir = bind ? `/hostRepo` : `/storage/branches/${branch}`;
+      let bind = gitBranchName === branch;
+      if (bind) {
+        // Binding from Docker in Docker to a volume on windows
+        // does not seem to work...
+        // (even if we re-parse the path to posix/linux)
+        // so let us create the container with a bind-mount
+        // later in our start.sh script
+        continue;
+      }
+      let name = gitRepoName + '-' + branch;
+      let workingDir = `/storage/branches/${branch}`;
       yml = [
         ...yml,
         `  ${branch}:`,
@@ -192,13 +198,7 @@ function buildComposeFile() {
         `    ports:`,
         `      - "${hostPort}:${port}"`,
         `    volumes:`,
-        ...(bind ? [
-          `      - type: bind`,
-          `        source: ${hostRepoPath}`,
-          `        target: /hostRepo`
-        ] : [
-          `      - ${gitRepoName}-storage:/storage`
-        ]),
+        `      - ${gitRepoName}-storage:/storage`,
         `    environment:`,
         `       PORT: ${port}`
       ];
