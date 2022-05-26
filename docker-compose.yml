@@ -5,4 +5,3 @@ services:
     build: php
     ports:
       - "80:80"
-      - "443:443"
