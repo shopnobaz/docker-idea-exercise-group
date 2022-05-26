@@ -1,0 +1,25 @@
+{
+  "name": "docker-idea-exercise-group",
+  "version": "1.0.0",
+  "description": "Hello developer!",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --legacy-watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shopnobaz/docker-idea-exercise-group.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shopnobaz/docker-idea-exercise-group/issues"
+  },
+  "homepage": "https://github.com/shopnobaz/docker-idea-exercise-group#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "index.js": "^0.0.3",
+    "nodemon": "^2.0.16"
+  }
+}
