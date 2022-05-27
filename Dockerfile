@@ -1,3 +1,3 @@
-FROM php:7.4-cli
+FROM php:7.4-apache
 
 CMD [ "php", "./index.php" ]
