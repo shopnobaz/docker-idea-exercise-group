@@ -1,10 +1,6 @@
 [
-  "country-info",
-  [
-    80
-  ],
   "country-info-db",
   [
-    3306
+    8080
   ]
 ]
