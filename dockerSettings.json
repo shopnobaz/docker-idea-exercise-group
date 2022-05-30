@@ -1,10 +1,10 @@
 [
-  "dev-frontend",
+  "country-info",
   [
-    4001
+    80
   ],
-  "main-frontend",
+  "country-info-db",
   [
-    4000
+    3306
   ]
 ]
