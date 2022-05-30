@@ -1,6 +1,6 @@
 [
-  "country-info",
+  "country-info-db",
   [
-    80
+    8080
   ]
 ]
