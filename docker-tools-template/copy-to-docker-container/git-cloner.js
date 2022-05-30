@@ -172,8 +172,7 @@ function buildComposeFile() {
   for (let { branch, hostPort, port } of dockerSettings) {
 
     // for now use the hostPort (if it exists) as internal port
-    // the vite developer server gets confused otherwise
-    // looking for a solution to this
+    // the vite developer server gets confused otherwise...
     port = hostPort || port;
 
     if (fs.existsSync(`/storage/branches/${branch}/Dockerfile`)) {
@@ -184,6 +183,8 @@ function buildComposeFile() {
         // (even if we re-parse the path to posix/linux)
         // so let us create the container with a bind-mount
         // later in our start.sh script
+        fs.unlinkSync('./bind-mounted-container-port.txt');
+        fs.writeFileSync('./bind-mounted-container-port.txt', port, 'utf-8');
         continue;
       }
       let name = gitRepoName + '-' + branch;
