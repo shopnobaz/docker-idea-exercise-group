@@ -1,17 +1,10 @@
-version: "3.9"
-
+version: '3.1'
 services:
-  mysql:
-    container_name: mysql
+  db:
     image: mysql
     restart: always
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: base
     environment:
-      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test_db
     ports:
-      - ${PORT}:${PORT}
-    expose:
-      - "${PORT}"
+      - "3307:3306"
