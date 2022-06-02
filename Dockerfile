@@ -4,4 +4,4 @@ FROM mysql:debian
 ## && mysqld \
 ##&& --user=root \
 # This just keeps the container running (no Apache start)
-CMD tail -f /dev/nul
+CMD tail -f /dev/null
