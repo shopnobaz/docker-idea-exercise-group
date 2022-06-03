@@ -1,6 +1,14 @@
 [
-  "nginx",
+  "jahed-php",
   [
-    8080
+    4000
+  ],
+  "jahed-react",
+  [
+    4001
+  ],
+  "iframe",
+  [
+    4002
   ]
 ]
