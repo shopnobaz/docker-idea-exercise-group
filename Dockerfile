@@ -1,6 +1,3 @@
-# IN YOUR OWN BRANCH
-# (BASED ON MAIN?)
+FROM nginx
 
-# CREATE A DOCKER FILE
-# AND ADJUST HE dockerSettings.json FILE
-# FOR YOUR NEEDS!
+CMD ["nginx" "-g" "daemon off;"]
