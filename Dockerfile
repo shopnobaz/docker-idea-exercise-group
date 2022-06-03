@@ -1,3 +1,3 @@
 FROM nginx
 
-CMD ["nginx"]
+CMD tail -f /dev/null
