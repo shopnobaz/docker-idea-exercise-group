@@ -1,5 +1,5 @@
 <?php
-    $servername = "docker-idea-clone-db:4000";
+    $servername = "docker-idea-clone-mysql:4000";
     $username = "root";
     $password = "mysql";
     $database = "countries";
