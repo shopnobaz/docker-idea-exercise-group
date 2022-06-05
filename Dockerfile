@@ -1,6 +1,6 @@
 FROM php:apache-bullseye
 # Start Apache correctly
-# Start Apache correctly
+#install mysqli
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 RUN apachectl restart
 
