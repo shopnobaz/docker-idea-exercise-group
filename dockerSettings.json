@@ -1,14 +1,6 @@
 [
-  "jahed-php",
+  "db",
   [
     4000
-  ],
-  "jahed-react",
-  [
-    4001
-  ],
-  "iframe",
-  [
-    4002
   ]
 ]
